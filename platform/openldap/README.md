@@ -7,14 +7,18 @@
 ## Chart Details
 This chart will do the following:
 
-* Instantiate an instance of OpenLDAP server
+* Instantiate 3 instances of OpenLDAP server with multi-master replication
+* A phpldapadmin to administrate the OpenLDAP server
+* ltb-passwd for self service password
 
 ## Installing the Chart
 
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm install --name my-release stable/openldap
+$ git clone https://github.com/jp-gouin/helm-openldap.git
+$ cd helm-openldap
+$ helm install openldap .
 ```
 
 ## Configuration
@@ -25,7 +29,7 @@ The following table lists the configurable parameters of the openldap chart and 
 
 | Parameter                          | Description                                                                                                                               | Default             |
 | ---------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- | ------------------- |
-| `replicaCount`                     | Number of replicas                                                                                                                        | `1`                 |
+| `replicaCount`                     | Number of replicas                                                                                                                        | `3`                 |
 | `strategy`                         | Deployment strategy                                                                                                                       | `{}`                |
 | `image.repository`                 | Container image repository                                                                                                                | `osixia/openldap`   |
 | `image.tag`                        | Container image tag                                                                                                                       | `1.1.10`            |
@@ -34,16 +38,17 @@ The following table lists the configurable parameters of the openldap chart and 
 | `podAnnotations`                   | Annotations to add to the pod                                                                                                             | `{}`                |
 | `existingSecret`                   | Use an existing secret for admin and config user passwords                                                                                | `""`                |
 | `service.annotations`              | Annotations to add to the service                                                                                                         | `{}`                |
-| `service.clusterIP`                | IP address to assign to the service                                                                                                       | `nil`                |
 | `service.externalIPs`              | Service external IP addresses                                                                                                             | `[]`                |
 | `service.ldapPort`                 | External service port for LDAP                                                                                                            | `389`               |
+| `service.ldapPortNodePort`                 | Nodeport of External service port for LDAP if service.type is NodePort                                                                                                            | `nil`               |
 | `service.loadBalancerIP`           | IP address to assign to load balancer (if supported)                                                                                      | `""`                |
 | `service.loadBalancerSourceRanges` | List of IP CIDRs allowed access to load balancer (if supported)                                                                           | `[]`                |
 | `service.sslLdapPort`              | External service port for SSL+LDAP                                                                                                        | `636`               |
-| `service.type`                     | Service type                                                                                                                              | `ClusterIP`         |
+| `service.sslLdapPortNodePort`                 | Nodeport of External service port for SSL if service.type is NodePort                                                                                                            | `nil`               |
+| `service.type`                     | Service type can be ClusterIP, NodePort, LoadBalancer                                                                                                                              | `ClusterIP`         |
 | `env`                              | List of key value pairs as env variables to be sent to the docker image. See https://github.com/osixia/docker-openldap for available ones | `[see values.yaml]` |
 | `logLevel`                         | Set the container log level. Valid values: `none`, `error`, `warning`, `info`, `debug`, `trace`                                           | `info`              |
-| `tls.enabled`                      | Set to enable TLS/LDAPS - should also set `tls.secret`                                                                                    | `false`             |
+| `tls.enabled`                      | Set to enable TLS/LDAPS with custom certificate - should also set `tls.secret`                                                                                    | `false`             |
 | `tls.secret`                       | Secret containing TLS cert and key (eg, generated via cert-manager)                                                                       | `""`                |
 | `tls.CA.enabled`                   | Set to enable custom CA crt file - should also set `tls.CA.secret`                                                                        | `false`             |
 | `tls.CA.secret`                    | Secret containing CA certificate (ca.crt)                                                                                                 | `""`                |
@@ -54,13 +59,19 @@ The following table lists the configurable parameters of the openldap chart and 
 | `persistence.storageClass`         | Storage class for PersistentVolumes.                                                                                                      | `<unset>`           |
 | `persistence.accessMode`           | Access mode for PersistentVolumes                                                                                                         | `ReadWriteOnce`     |
 | `persistence.size`                 | PersistentVolumeClaim storage size                                                                                                        | `8Gi`               |
-| `persistence.existingClaim`        | An Existing PVC name for openLDAPA volume                                                                                                 | None                |
 | `resources`                        | Container resource requests and limits in yaml                                                                                            | `{}`                |
-| `initResources`                    | initContainer resource requests and limits in yaml                                                                                        | `{}`                |
 | `test.enabled`                     | Conditionally provision test resources                                                                                                    | `false`             |
 | `test.image.repository`            | Test container image requires bats framework                                                                                              | `dduportal/bats`    |
 | `test.image.tag`                   | Test container tag                                                                                                                        | `0.4.0`             |
-
+| `replication.enabled`              | Enable the multi-master replication | `true` |
+| `replication.clusterName`          | Set the clustername for replication | "cluster.local" |
+| `phpldapadmin.enabled`             | Enable the deployment of PhpLdapAdmin | `true`|
+| `phpldapadmin.ingress`             | Ingress of Phpldapadmin | `{}` |
+| `phpldapadmin.env`  | Environment variables for PhpldapAdmin| `{}` |
+|`ltb-passwd.enabled`| Enable the deployment of Ltb-Passwd| `true` |
+|`ltb-passwd.ingress`| Ingress of the Ltb-Passwd service | `{}` |
+|`ltb-passwd.ldap`| Ldap configuration for the Ltb-Passwd service | `{}` |
+|`ltb-passwd.env`| Environment variables for ltp-passwd | `{}` |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
@@ -72,6 +83,56 @@ $ helm install --name my-release -f values.yaml stable/openldap
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
+
+## PhpLdapAdmin
+To enable PhpLdapAdmin set `phpldapadmin.enabled`  to `true`
+
+Ingress can be configure if you want to expose the service.
+Setup the env part of the configuration to access the OpenLdap server
+
+**Note** : The ldap host should match the following `namespace.Appfullname`
+
+Example : 
+```
+phpldapadmin:
+  enabled: true
+  ingress:
+    enabled: true
+    annotations: {}
+    path: /
+    ## Ingress Host
+    hosts:
+    - phpldapadmin.local
+  env:
+    PHPLDAPADMIN_LDAP_HOSTS: openldap.openldap
+     
+```
+## Self-service-password
+To enable Self-service-password set `ltb-passwd.enabled`  to `true`
+
+Ingress can be configure if you want to expose the service.
+
+Setup the `ldap` part with the information of the OpenLdap server.
+
+Set `bindDN` accordingly to your ldap domain
+
+**Note** : The ldap server host should match the following `ldap://namespace.Appfullname`
+
+Example : 
+```
+ltb-passwd:
+  enabled : true
+  ingress:
+    enabled: true
+    annotations: {}
+    host: "ssl-ldap2.local"
+  ldap:
+    server: ldap://openldap.openldap
+    searchBase: dc=example,dc=org
+    bindDN: cn=admin,dc=example,dc=org
+    bindPWKey: LDAP_ADMIN_PASSWORD
+  
+```
 
 ## Cleanup orphaned Persistent Volumes
 

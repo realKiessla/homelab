@@ -5,7 +5,6 @@ Expand the name of the chart.
 {{- define "openldap.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
-
 {{/*
 Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
@@ -37,4 +36,29 @@ Generate chart secret name
 */}}
 {{- define "openldap.secretName" -}}
 {{ default (include "openldap.fullname" .) .Values.existingSecret }}
+{{- end -}}
+{{/*
+Generate replication services list
+*/}}
+{{- define "replicalist" -}}
+{{- $name := (include "openldap.fullname" .) }}
+{{- $namespace := .Release.Namespace }}
+{{- $cluster := .Values.replication.clusterName }}
+{{- $nodeCount := .Values.replicaCount | int }}
+  {{- range $index0 := until $nodeCount -}}
+    {{- $index1 := $index0 | add1 -}}
+'ldap://{{ $name }}-{{ $index0 }}.{{ $name }}-headless.{{ $namespace }}.svc.{{ $cluster }}'{{ if ne $index1 $nodeCount }},{{ end }}
+  {{- end -}}
+{{- end -}}
+{{/*
+Renders a value that contains template.
+Usage:
+{{ include "openldap.tplValue" ( dict "value" .Values.path.to.the.Value "context" $) }}
+*/}}
+{{- define "openldap.tplValue" -}}
+    {{- if typeIs "string" .value }}
+        {{- tpl .value .context }}
+    {{- else }}
+        {{- tpl (.value | toYaml) .context }}
+    {{- end }}
 {{- end -}}

@@ -1,9 +1,6 @@
 # Number of replicas that should be running.
 replicaCount: 3
 
-nameOverride: openldap
-fullnameOverride: openldap
-
 # Define the image to be used.
 image:
   repository: osixia/openldap
@@ -48,7 +45,7 @@ service:
 
   #loadBalancerIP: 
   #loadBalancerSourceRanges: []
-  type: NodePort
+  type: ClusterIP
 
 # Default configuration for openldap as environment variables. These get injected directly in the container.
 # Use the env variables from https://github.com/osixia/docker-openldap#beginner-guide

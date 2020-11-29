@@ -2,7 +2,7 @@
 clusterZone: "cluster.local"
 renderHelmLabels: true
 
-master:
+controller:
   # Used for label app.kubernetes.io/component
   componentName: "jenkins-master"
   image: "tenbriz/jenkins"
@@ -24,18 +24,8 @@ master:
   markupFormatter: plainText
   customJenkinsLabels: []
   # configAutoReload requires UseSecurity is set to true:
-  useSecurity: true
+  adminSecret: false
 
-  # enables configuration done directly via XML files
-  enableXmlConfig: false
-  # Allows to configure different SecurityRealm using Jenkins XML
-  securityRealm: |-
-    <securityRealm class="hudson.security.LegacySecurityRealm"/>
-  # Allows to configure different AuthorizationStrategy using Jenkins XML
-  authorizationStrategy: |-
-    <authorizationStrategy class="hudson.security.FullControlOnceLoggedInAuthorizationStrategy">
-      <denyAnonymousReadAccess>true</denyAnonymousReadAccess>
-    </authorizationStrategy>
   hostNetworking: false
   # When enabling LDAP or another non-Jenkins identity source, the built-in admin account will no longer exist.
   # If you disable the non-Jenkins identity store and instead use the Jenkins internal one,
@@ -68,7 +58,7 @@ master:
 
   containerEnv:
     - name: SECRETS
-      value: /var/jenkins_secrets
+      value: /secrets/jenkins
 
   # Enable pod security context (must be `true` if runAsUser or fsGroup are set)
   usePodSecurityContext: true
@@ -88,7 +78,7 @@ master:
   # Jenkins master service annotations
   serviceAnnotations: {}
   # Jenkins master custom labels
-  deploymentLabels: {}
+  statefulSetLabels: {}
   #   foo: bar
   #   bar: foo
   # Jenkins master service labels
@@ -102,24 +92,30 @@ master:
   # if Startup Probe is supported, enable it too
   # ~ 2 minutes to allow Jenkins to restart when upgrading plugins. Set ReadinessTimeout to be shorter than LivenessTimeout.
   healthProbes: true
-  healthProbesLivenessTimeout: 5
-  healthProbesReadinessTimeout: 5
-  healthProbeLivenessPeriodSeconds: 10
-  healthProbeReadinessPeriodSeconds: 10
-  healthProbeLivenessFailureThreshold: 5
-  healthProbeReadinessFailureThreshold: 3
-  healthProbeLivenessInitialDelay: 90
-  healthProbeReadinessInitialDelay: 60
   probes:
     startupProbe:
       httpGet:
-        path: '{{ default "" .Values.master.jenkinsUriPrefix }}/login'
+        path: '{{ default "" .Values.controller.jenkinsUriPrefix }}/login'
         port: http
       periodSeconds: 10
       timeoutSeconds: 5
       failureThreshold: 12
-  slaveListenerPort: 50000
-  slaveHostPort:
+    livenessProbe:
+      failureThreshold: 5
+      httpGet:
+        path: '{{ default "" .Values.controller.jenkinsUriPrefix }}/login'
+        port: http
+      periodSeconds: 10
+      timeoutSeconds: 5
+    readinessProbe:
+      failureThreshold: 3
+      httpGet:
+        path: '{{ default "" .Values.controller.jenkinsUriPrefix }}/login'
+        port: http
+      periodSeconds: 10
+      timeoutSeconds: 5
+  agentListenerPort: 50000
+  agentListenerHostPort:
   disabledAgentProtocols:
     - JNLP-connect
     - JNLP2-connect
@@ -127,24 +123,18 @@ master:
     defaultCrumbIssuer:
       enabled: true
       proxyCompatability: true
-  cli: false
+
   # Kubernetes service type for the JNLP agent service
   # slaveListenerServiceType is the Kubernetes Service type for the JNLP agent service,
   # either 'LoadBalancer', 'NodePort', or 'ClusterIP'
   # Note if you set this to 'LoadBalancer', you *must* define annotations to secure it. By default
   # this will be an external load balancer and allowing inbound 0.0.0.0/0, a HUGE
   # security risk:  https://github.com/kubernetes/charts/issues/1341
-  slaveListenerServiceType: "ClusterIP"
+  agentListenerServiceType: "ClusterIP"
   # Optionally assign an IP to the LoadBalancer slaveListenerService LoadBalancer
   # GKE users: only regional static IPs will work for Service Load balancer.
   # slaveListenerLoadBalancerIP: 1.2.3.4
-  slaveListenerServiceAnnotations: {}
-  slaveDefaultsProviderTemplate: ""
-  slaveConnectTimeout: 5
-  slaveReadTimeout: 15
-  slaveKubernetesNamespace:
-  slaveJenkinsUrl:
-  slaveJenkinsTunnel:
+  agentListenerServiceAnnotations: {}
 
   # Example of 'LoadBalancer' type of agent listener with annotations securing it
   # slaveListenerServiceType: LoadBalancer
@@ -184,15 +174,8 @@ master:
   # List of groovy init scripts to be executed during Jenkins master start
   initScripts: []
 
-  # Kubernetes secret that contains credentials for Jenkins
-  secretsFilesSecret: jenkins-secrets
-
-  # Jenkins XML job configs to provision
-  jobs: {}
-
   # Below is the implementation of Jenkins Configuration as Code.
   JCasC:
-    enabled: true
     defaultConfig: true
     configScripts:
       welcome-message: |
@@ -234,12 +217,23 @@ master:
                       - "Job/Read"
                     assignments:
                       - "jenkins-user"
-
-    # Ignored if authorizationStrategy is defined in master.JCasC.configScripts and
-    # ignored if master.enableXmlConfig=true as master.authorizationStrategy takes precedence
-    authorizationStrategy: |-
-      loggedInUsersCanDoAnything:
-        allowAnonymousRead: false
+      credentials: |
+        credentials:
+          system:
+            domainCredentials:
+              - credentials:
+                  - usernamePassword:
+                      scope: GLOBAL
+                      id: "github"
+                      username: "realkiessla"
+                      password: "${GITHUB_PASSWORD}"
+                      description: "Username/Password Credentials for github.com"
+                  - usernamePassword:
+                      scope: GLOBAL
+                      id: "docker"
+                      username: "tenbriz"
+                      password: "${DOCKER_PASSWORD}"
+                      description: "Username/Password Credentials for hub.docker.com"
 
   # Optionally specify additional init-containers
   customInitContainers: []
@@ -264,21 +258,6 @@ master:
   podAnnotations: {}
   # Add deployment annotation
   deploymentAnnotations: {}
-
-  # The below two configuration-related values are deprecated and replaced by Jenkins Configuration as Code (see above
-  # JCasC key).  They will be deleted in an upcoming version.
-  customConfigMap: false
-
-  # By default, the configMap is only used to set the initial config the first time
-  # that the chart is installed.  Setting `overwriteConfig` to `true` will overwrite
-  # the jenkins config with the contents of the configMap every time the pod starts.
-  # This will also overwrite all init scripts
-  overwriteConfig: false
-
-  # By default, the Jobs Map is only used to set the initial jobs the first time
-  # that the chart is installed.  Setting `overwriteJobs` to `true` will overwrite
-  # the jenkins jobs configuration with the contents of Jobs every time the pod starts.
-  overwriteJobs: false
 
   ingress:
     enabled: true
@@ -351,7 +330,7 @@ agent:
   customJenkinsLabels: []
   # name of the secret to be used for image pulling
   imagePullSecretName:
-  componentName: "jenkins-slave"
+  componentName: "jenkins-agent"
   websocket: false
   privileged: false
   runAsUser: 1000
@@ -388,16 +367,21 @@ agent:
   # Max number of spawned agent
   containerCap: 5
   # Pod name
-  podName: "jenkins-slave"
+  podName: "jenkins-agent"
   # Allows the Pod to remain active for reuse until the configured number of
   # minutes has passed since the last step was executed on it.
   idleMinutes: 1
   # Defines how the raw yaml field gets merged with yaml definitions from inherited pod templates: merge or override
   yamlMergeStrategy: "override"
   # Timeout in seconds for an agent to be online
-  slaveConnectTimeout: 100
+  connectTimeout: 100
   # Annotations to apply to the pod.
   annotations: {}
+
+  jenkinsUrl:
+  jenkinsTunnel:
+  kubernetesConnectTimeout: 5
+  kubernetesReadTimeout: 15
 
 # Here you can add additional agents
 # They inherit all values from `agent` so you only need to specify values which differ
@@ -432,7 +416,13 @@ persistence:
   accessMode: "ReadWriteOnce"
   size: "8Gi"
   volumes:
+    - name: jenkins-secrets
+      secret:
+        secretName: jenkins-secrets
   mounts:
+    - name: jenkins-secrets
+      mountPath: /secrets/jenkins
+      readOnly: true
 
 networkPolicy:
   # Enable creation of NetworkPolicy resources.

@@ -65,6 +65,11 @@ master:
     limits:
       cpu: "2000m"
       memory: "4096Mi"
+
+  containerEnv:
+    - name: SECRETS
+      value: /var/jenkins_secrets
+
   # Enable pod security context (must be `true` if runAsUser or fsGroup are set)
   usePodSecurityContext: true
   # Set runAsUser to 1000 to let Jenkins run as non-root user 'jenkins' which exists in 'jenkins/jenkins' docker image.
@@ -178,6 +183,9 @@ master:
 
   # List of groovy init scripts to be executed during Jenkins master start
   initScripts: []
+
+  # Kubernetes secret that contains credentials for Jenkins
+  secretsFilesSecret: jenkins-secrets
 
   # Jenkins XML job configs to provision
   jobs: {}

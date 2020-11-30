@@ -328,8 +328,8 @@ controller:
 
 agent:
   enabled: true
-  image: "tenbriz/inbound-agent"
-  tag: "4.6-1"
+  image: "tenbriz/jenkins-inbound-agent"
+  tag: "4.6-1-jdk11"
   workingDir: "/home/jenkins"
   customJenkinsLabels: []
   # name of the secret to be used for image pulling
@@ -413,6 +413,8 @@ additionalAgents:
               name: volume-0
   docker-amd:
     podName: docker-amd
+    image: "jenkins/inbound-agent"
+    tag: "4.6-1-jdk11"
     nodeSelector:
       beta.kubernetes.io/arch: amd64
       tools/docker: "1"

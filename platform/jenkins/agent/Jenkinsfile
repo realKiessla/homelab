@@ -6,7 +6,6 @@ pipeline {
     }
 
     options {
-        timestamps()
         timeout(time: 1, unit: 'HOURS')
         buildDiscarder(logRotator(numToKeepStr: '5'))
     }
@@ -40,7 +39,7 @@ pipeline {
             steps {
                 container('docker') {
                     dir('./docker-agent/11/buster') {
-                        sh "docker build -t tenbriz/jenkins-agent:latest -t tenbriz/jenkins-agent:${params.TAG_NAME} ."
+                        sh "docker build -t tenbriz/jenkins-agent:latest -t tenbriz/jenkins-agent:${params.TAG_NAME}-jdk11 ."
                     }
                 }
             }
@@ -54,7 +53,8 @@ pipeline {
                             sh "docker login -u ${DOCKER_LOGIN_USERNAME} -p ${DOCKER_LOGIN_PASSWORD}"
                         }
 
-                        sh "docker push tenbriz/jenkins-agent"
+                        sh "docker push tenbriz/jenkins-agent:${params.TAG_NAME}-jdk11"
+                        sh "docker push tenbriz/jenkins-agent:latest"
                     }
                 }
             }

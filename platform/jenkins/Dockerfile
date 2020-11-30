@@ -1,4 +1,4 @@
-FROM jenkins/jenkins:2.249.3-lts
+FROM jenkins/$version
 RUN jenkins-plugin-cli --plugins \
   git \
   ldap \

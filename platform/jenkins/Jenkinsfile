@@ -23,6 +23,14 @@ pipeline {
             }
         }
 
+        stage('Update Dockerfile') {
+            steps {
+                dir('./platform/jenkins') {
+                    sh "sed -i s/$version/${TAG_NAME}/ Dockerfile"
+                }
+            }
+        }
+
         stage('Build') {
             steps {
                 container('docker') {

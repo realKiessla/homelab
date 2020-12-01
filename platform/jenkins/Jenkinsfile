@@ -26,7 +26,7 @@ pipeline {
         stage('Update Dockerfile') {
             steps {
                 dir('./platform/jenkins') {
-                    sh "sed -i s/$version/${TAG_NAME}/ Dockerfile"
+                    sh "sed -i 's/_version/${TAG_NAME}/' Dockerfile"
                 }
             }
         }

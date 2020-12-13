@@ -36,8 +36,9 @@ service:
   sslLdapPort: 636
 
   ## If service type NodePort, define the value here
-  #ldapPortNodePort:
-  #sslLdapPortNodePort:
+  ldapPortNodePort: 30389
+  sslLdapPortNodePort: 30636
+
   ## List of IP addresses at which the service is available
   ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
   ##
@@ -45,7 +46,7 @@ service:
 
   #loadBalancerIP: 
   #loadBalancerSourceRanges: []
-  type: ClusterIP
+  type: NodePort
 
 # Default configuration for openldap as environment variables. These get injected directly in the container.
 # Use the env variables from https://github.com/osixia/docker-openldap#beginner-guide

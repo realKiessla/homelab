@@ -1,0 +1,10 @@
+# Add new network interface for (tagged) vlan 40.
+network:
+  vlans:
+    vlan40:
+      id: 40
+      link: eth0
+      dhcp4: true
+      dhcp4-overrides:
+        route-metric: 200
+  version: 2

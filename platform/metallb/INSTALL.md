@@ -9,7 +9,7 @@ That means if we have two VLANs and peers with respectively two LoadBalancers, M
 For more information regarding this issue read the [README.md](README.md).
 
 ## Installation
-We only needed to customize the `speaker` of MetalLB, the controller can be used as is.
+We needed to customize the `speaker` and `controller` of MetalLB.
 Therefore, we have to use our own `metallb.yaml` and cannot use the one provided on the website.
 
 - The namespace creation still can be done with:\

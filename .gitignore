@@ -1,3 +1,4 @@
 /.idea/
 /applications/openldap/secrets.yaml
 /applications/jenkins/secrets.yaml
+/platform/traefik/charts

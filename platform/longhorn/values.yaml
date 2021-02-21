@@ -2,3 +2,7 @@ longhorn:
   ingress:
     enabled: "true"
     host: "longhorn.caas.i.kiessla.de"
+    tls: "true"
+    tlsSecret: "longhorn.acme-tls"
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt

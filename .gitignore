@@ -3,3 +3,4 @@
 /applications/jenkins/secrets.yaml
 /platform/nginx/charts
 /platform/longhorn/charts
+/platform/cert-manager/digitalocean-dns-secret.yaml

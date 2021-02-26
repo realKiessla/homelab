@@ -1,16 +1,10 @@
-apiVersion: v1
+apiVersion: v2
 name: openldap
-home: https://www.openldap.org
-version: 2.0.3
-appVersion: 2.4.47
-description: Community developed LDAP software
-icon: http://www.openldap.org/images/headers/LDAPworm.gif
-keywords:
-  - ldap
-  - openldap
-sources:
-  - https://github.com/kubernetes/charts
-maintainers:
-  - name: Jean-Philippe Gouin
-    email: jp-gouin@hotmail.fr
-engine: gotpl
+description: Helm chart for OpenLDAP.
+type: application
+version: 0.1.0
+appVersion: 1.4.0
+dependencies:
+  - name: openldap-stack-ha
+    version: 2.1.0
+    repository: https://jp-gouin.github.io/helm-openldap/

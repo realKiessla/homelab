@@ -1,115 +1,76 @@
-# Number of replicas that should be running.
-replicaCount: 3
+openldap-stack-ha:
 
-# Define the image to be used.
-image:
-  repository: osixia/openldap
-  tag: 1.4.0
-  pullPolicy: IfNotPresent
-  pullSecret: harbor
+  # Override name of deployment.
+  nameOverride: "openldap"
+  fullnameOverride: "openldap"
 
-# Set the container log level
-# Valid log levels: none, error, warning, info (default), debug, trace
-logLevel: info
+  # Amount of pods to be used.
+  replicaCount: 3
 
-# Specifies an existing secret to be used for admin and config user passwords
-existingSecret: "openldap-secret"
+  # Update strategy for new rollouts.
+  strategy: {}
+#    type: RollingUpdate
+#    rollingUpdate:
+#      maxUnavailable: 1
+#      maxSurge: 1
 
-# Settings for enabling TLS with custom certificate
-tls:
-  enabled: true
-  secret: ""  # The name of a kubernetes.io/tls type secret to use for TLS
-  CA:
+  # Overwrite default pullPolicy which is 'Always'.
+  image:
+    pullPolicy: IfNotPresent
+
+  # Specifies an existing secret to be used for admin and config user passwords
+  existingSecret: "openldap-secret"
+
+  tls:
     enabled: false
-    secret: ""  # The name of a generic secret to use for custom CA certificate (ca.crt)
 
-## Add additional labels to all resources
-extraLabels: {}
-
-## Add additional annotations to pods
-podAnnotations: {}
-
-service:
-  annotations: {}
-
-  ldapPort: 389
-  sslLdapPort: 636
-
-  ## If service type NodePort, define the value here
-  ldapPortNodePort: 30389
-  sslLdapPortNodePort: 30636
-
-  ## List of IP addresses at which the service is available
-  ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
-  ##
-  externalIPs: []
-
-  #loadBalancerIP: 
-  #loadBalancerSourceRanges: []
-  type: NodePort
-
-# Default configuration for openldap as environment variables. These get injected directly in the container.
-# Use the env variables from https://github.com/osixia/docker-openldap#beginner-guide
-env:
- LDAP_LOG_LEVEL: "256"
- LDAP_ORGANISATION: "Kiessla HomeLab"
- LDAP_DOMAIN: "kiessla.de"
- LDAP_READONLY_USER: "false"
- LDAP_READONLY_USER_USERNAME: "readonly"
- LDAP_READONLY_USER_PASSWORD: "readonly"
- LDAP_RFC2307BIS_SCHEMA: "false"
- LDAP_BACKEND: "mdb"
- LDAP_TLS: "true"
- LDAP_TLS_CRT_FILENAME: "ldap.crt"
- LDAP_TLS_KEY_FILENAME: "ldap.key"
- LDAP_TLS_DH_PARAM_FILENAME: "dhparam.pem"
- LDAP_TLS_CA_CRT_FILENAME: "ca.crt"
- LDAP_TLS_ENFORCE: "false"
- CONTAINER_LOG_LEVEL: "4"
- LDAP_TLS_REQCERT: "never"
- KEEP_EXISTING_CONFIG: "false"
- LDAP_REMOVE_CONFIG_AFTER_SETUP: "true"
- LDAP_SSL_HELPER_PREFIX: "ldap"
- LDAP_TLS_VERIFY_CLIENT: "never"
- LDAP_TLS_PROTOCOL_MIN: "3.0"
- LDAP_TLS_CIPHER_SUITE: "NORMAL"
-
-# Custom openldap configuration files used to override default settings
-# customLdifFiles:
-  # 01-default-users.ldif: |-
-    # Predefine users here
-
-replication:
-  enabled: true
-  # Enter the name of your cluster, defaults to "cluster.local"
-  clusterName: "cluster.local"
-
-## Persist data to a persistent volume
-persistence:
-  enabled: true
-  accessModes:
-    - ReadWriteOnce
-  size: 8Gi
-
-resources:
-  requests:
-    cpu: "100m"
-    memory: "256Mi"
-  limits:
-    cpu: "500m"
-    memory: "512Mi"
-
-nodeSelector: {}
-
-tolerations: []
-
-phpldapadmin:
-  enabled: true
-  ingress:
-    enabled: true
-    annotations: {}
-    path: /
-    hosts:
-    - phpldapadmin.caas.i.kiessla.de
   env:
-    PHPLDAPADMIN_LDAP_HOSTS: openldap
+    LDAP_LOG_LEVEL: "256"
+    LDAP_ORGANISATION: "Kiessla HomeLab"
+    LDAP_DOMAIN: "kiessla.de"
+    LDAP_READONLY_USER: "false"
+    LDAP_READONLY_USER_USERNAME: "readonly"
+    LDAP_READONLY_USER_PASSWORD: "readonly"
+    LDAP_RFC2307BIS_SCHEMA: "false"
+    LDAP_BACKEND: "mdb"
+    LDAP_TLS: "true"
+    LDAP_TLS_CRT_FILENAME: "ldap.crt"
+    LDAP_TLS_KEY_FILENAME: "ldap.key"
+    LDAP_TLS_DH_PARAM_FILENAME: "dhparam.pem"
+    LDAP_TLS_CA_CRT_FILENAME: "ca.crt"
+    LDAP_TLS_ENFORCE: "false"
+    CONTAINER_LOG_LEVEL: "4"
+    LDAP_TLS_REQCERT: "never"
+    KEEP_EXISTING_CONFIG: "false"
+    LDAP_REMOVE_CONFIG_AFTER_SETUP: "true"
+    LDAP_SSL_HELPER_PREFIX: "ldap"
+    LDAP_TLS_VERIFY_CLIENT: "never"
+    LDAP_TLS_PROTOCOL_MIN: "3.0"
+    LDAP_TLS_CIPHER_SUITE: "NORMAL"
+
+  resources:
+    requests:
+      memory: "128Mi"
+      cpu: "100m"
+    limits:
+      memory: "256Mi"
+      cpu: "1000m"
+
+  ltb-passwd:
+    enabled: false
+
+  phpldapadmin:
+    enabled: true
+    ingress:
+      enabled: true
+      annotations:
+        cert-manager.io/cluster-issuer: letsencrypt
+      path: /
+      hosts:
+        - "phpldapadmin.caas.i.kiessla.de"
+      tls:
+      - secretName: "phpldapadmin.acme-tls"
+        hosts:
+        - "phpldapadmin.caas.i.kiessla.de"
+    env:
+      PHPLDAPADMIN_LDAP_HOSTS: openldap

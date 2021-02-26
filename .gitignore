@@ -1,5 +1,6 @@
 /.idea/
-/applications/openldap/secrets.yaml
+/applications/openldap/charts
+/applications/openldap/templates/secret.yaml
 /applications/jenkins/secrets.yaml
 /platform/nginx/charts
 /platform/longhorn/charts

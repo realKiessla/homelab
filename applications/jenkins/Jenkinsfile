@@ -1,7 +1,7 @@
 pipeline {
     agent {
         kubernetes {
-            inheritFrom 'docker-amd'
+            inheritFrom 'docker-arm'
         }
     }
 

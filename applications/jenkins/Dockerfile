@@ -1,12 +1,12 @@
-FROM jenkins/jenkins:_version
+FROM jenkins4eval/jenkins:_version
 RUN jenkins-plugin-cli --plugins \
-  git \
-  ldap \
-  job-dsl \
-  kubernetes \
-  role-strategy \
-  cloudbees-folder \
-  workflow-aggregator \
-  pipeline-stage-view \
-  github-branch-source \
-  configuration-as-code \
+    git \
+    ldap \
+    job-dsl \
+    kubernetes \
+    role-strategy \
+    cloudbees-folder \
+    workflow-aggregator \
+    pipeline-stage-view \
+    github-branch-source \
+    configuration-as-code \

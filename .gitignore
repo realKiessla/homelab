@@ -1,7 +1,8 @@
 /.idea/
 /applications/openldap/charts
 /applications/openldap/templates/secret.yaml
-/applications/jenkins/secrets.yaml
+/applications/jenkins/charts
+/applications/jenkins/templates/secret.yaml
 /platform/nginx/charts
 /platform/longhorn/charts
 /platform/cert-manager/digitalocean-dns-secret.yaml

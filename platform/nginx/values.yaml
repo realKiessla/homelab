@@ -1,0 +1,11 @@
+internal:
+  controller:
+    ingressClass: "nginx"
+    service:
+      loadBalancerIP: "10.0.50.5"
+
+public:
+  controller:
+    ingressClass: "nginx-public"
+    service:
+      loadBalancerIP: "10.0.40.5"

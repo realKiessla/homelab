@@ -8,3 +8,8 @@ dependencies:
   - name: ingress-nginx
     version: 3.23.0
     repository: https://kubernetes.github.io/ingress-nginx
+    alias: internal
+  - name: ingress-nginx
+    version: 3.23.0
+    repository: https://kubernetes.github.io/ingress-nginx
+    alias: public

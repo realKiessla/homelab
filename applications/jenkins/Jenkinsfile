@@ -25,7 +25,7 @@ pipeline {
 
         stage('Update Dockerfile') {
             steps {
-                dir('./platform/jenkins') {
+                dir('./applications/jenkins') {
                     sh "sed -i 's/_version/${TAG_NAME}/' Dockerfile"
                 }
             }
@@ -34,7 +34,7 @@ pipeline {
         stage('Build') {
             steps {
                 container('docker') {
-                    dir('./platform/jenkins') {
+                    dir('./applications/jenkins') {
                         sh "docker build -t tenbriz/jenkins:latest -t tenbriz/jenkins:${params.TAG_NAME} ."
                     }
                 }
@@ -44,7 +44,7 @@ pipeline {
         stage('Push') {
             steps {
                 container('docker') {
-                    dir('./platform/jenkins') {
+                    dir('./applications/jenkins') {
                         withCredentials([usernamePassword(credentialsId: 'docker', passwordVariable: 'DOCKER_LOGIN_PASSWORD', usernameVariable: 'DOCKER_LOGIN_USERNAME')]) {
                             sh "docker login -u ${DOCKER_LOGIN_USERNAME} -p ${DOCKER_LOGIN_PASSWORD}"
                         }

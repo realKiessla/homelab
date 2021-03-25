@@ -56,6 +56,12 @@ openldap-stack-ha:
       memory: "256Mi"
       cpu: "1000m"
 
+  service:
+    type: "NodePort"
+    nodePort: true
+    ldapPortNodePort: "30389"
+    sslLdapPortNodePort: "30636"
+
   ltb-passwd:
     enabled: false
 

@@ -8,11 +8,8 @@ openldap-stack-ha:
   replicaCount: 3
 
   # Update strategy for new rollouts.
-  strategy: {}
-#    type: RollingUpdate
-#    rollingUpdate:
-#      maxUnavailable: 1
-#      maxSurge: 1
+  updateStrategy:
+    type: RollingUpdate
 
   # Overwrite default pullPolicy which is 'Always'.
   image:

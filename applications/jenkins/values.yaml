@@ -2,8 +2,8 @@ jenkins:
   controller:
 
     # Image.
-    image: "jenkins4eval/jenkins"
-    tag: "2.291-slim"
+    image: "tenbriz/jenkins"
+    tag: "latest"
     imagePullPolicy: "IfNotPresent"
 
     # Admin user.

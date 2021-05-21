@@ -3,7 +3,7 @@ jenkins:
 
     # Image.
     image: "jenkins4eval/jenkins"
-    tag: "2.281-slim"
+    tag: "2.291-slim"
     imagePullPolicy: "IfNotPresent"
 
     # Admin user.

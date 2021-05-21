@@ -1,5 +1,5 @@
 FROM jenkins4eval/jenkins:_version
-RUN jenkins-plugin-cli --plugins \
+RUN /usr/local/bin/install-plugins.sh \
     git \
     ldap \
     job-dsl \

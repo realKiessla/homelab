@@ -64,6 +64,10 @@ openldap-stack-ha:
     image:
       repository: tenbriz/self-service-password
       tag: v1.4.3
+    ldap:
+      server: ldap://openldap
+      searchBase: dc=kiessla,dc=de
+      bindDN: cn=admin,dc=kiessla,dc=de
     ingress:
       enabled: true
       annotations:

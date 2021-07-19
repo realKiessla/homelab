@@ -60,7 +60,21 @@ openldap-stack-ha:
     sslLdapPortNodePort: "30636"
 
   ltb-passwd:
-    enabled: false
+    enabled: true
+    image:
+      repository: tenbriz/self-service-password
+      tag: v1.4.3
+    ingress:
+      enabled: true
+      annotations:
+        cert-manager.io/cluster-issuer: letsencrypt
+      path: /
+      hosts:
+        - "ssp.caas.i.kiessla.de"
+      tls:
+      - secretName: "ssp.acme-tls"
+        hosts:
+        - "ssp.caas.i.kiessla.de"
 
   phpldapadmin:
     enabled: true

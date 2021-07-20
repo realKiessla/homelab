@@ -68,6 +68,11 @@ openldap-stack-ha:
       server: ldap://openldap
       searchBase: dc=kiessla,dc=de
       bindDN: cn=admin,dc=kiessla,dc=de
+    env:
+    - name: DEBUG_MODE
+      value: "true"
+    - name: SECRETKEY
+      value: "password"
     ingress:
       enabled: true
       annotations:

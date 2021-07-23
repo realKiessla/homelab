@@ -63,7 +63,7 @@ openldap-stack-ha:
     enabled: true
     image:
       repository: tenbriz/self-service-password
-      tag: v1.5.1
+      tag: v1.5.2
     ldap:
       server: ldap://openldap
       searchBase: dc=kiessla,dc=de
@@ -71,6 +71,8 @@ openldap-stack-ha:
     env:
     - name: DEBUG
       value: "true"
+    - name: KEYPHRASE
+      value: "abcdef123456"
     ingress:
       enabled: true
       annotations:

@@ -1,0 +1,28 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ .Chart.Name }}
+  namespace: {{ .Chart.Name }}
+  labels:
+    "helm.sh/chart": "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    "app.kubernetes.io/name": "{{ .Chart.Name }}"
+    "app.kubernetes.io/managed-by": "{{ .Release.Service }}"
+    "app.kubernetes.io/instance": "{{ .Release.Name }}"
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt
+spec:
+  rules:
+    - http:
+        paths:
+          - backend:
+              service:
+                name: {{ .Chart.Name }}
+                port:
+                  name: http
+            path: /
+            pathType: ImplementationSpecific
+      host: "bitwarden.caas.i.kiessla.de"
+  tls:
+    - secretName: "bitwarden.acme-tls"
+      hosts:
+        - "bitwarden.caas.i.kiessla.de"

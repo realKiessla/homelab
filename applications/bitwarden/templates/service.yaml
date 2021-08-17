@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: "{{ .Chart.Name }}"
+  namespace: {{ .Chart.Name }}
+  labels:
+    "helm.sh/chart": "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    "app.kubernetes.io/name": "{{ .Chart.Name }}"
+    "app.kubernetes.io/managed-by": "{{ .Release.Service }}"
+    "app.kubernetes.io/instance": "{{ .Release.Name }}"
+spec:
+  type: ClusterIP
+  selector:
+    "app.kubernetes.io/name": "{{ .Chart.Name }}"
+    "app.kubernetes.io/instance": "{{ .Release.Name }}"
+  ports:
+    - port: 80
+      targetPort: 80
+      name: http

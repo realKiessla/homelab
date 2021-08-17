@@ -1,4 +1,5 @@
 /.idea/
+/applications/bitwarden/templates/secret.yaml
 /applications/openldap/charts
 /applications/openldap/templates/secret.yaml
 /applications/jenkins/charts

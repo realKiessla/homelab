@@ -1,0 +1,27 @@
+uptime-kuma:
+  image:
+    repository: louislam/uptime-kuma
+    tag: "1.11.1"
+    pullPolicy: IfNotPresent
+
+  persistence:
+    data:
+      enabled: true
+      accessMode: ReadWriteOnce
+      size: 1Gi
+
+  ingress:
+    main:
+      enabled: true
+      annotations:
+        cert-manager.io/cluster-issuer: letsencrypt
+        kubernetes.io/ingress.class: nginx
+        kubernetes.io/tls-acme: "true"
+      hosts:
+        - host: uptime.caas.i.kiessla.de
+          paths:
+            - path: /
+      tls:
+        - hosts:
+            - uptime.caas.i.kiessla.de
+          secretName: uptime-kuma.tls

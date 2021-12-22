@@ -4,12 +4,6 @@ uptime-kuma:
     tag: "1.11.1"
     pullPolicy: IfNotPresent
 
-  persistence:
-    data:
-      enabled: true
-      accessMode: ReadWriteOnce
-      size: 1Gi
-
   ingress:
     main:
       enabled: true
@@ -25,3 +19,18 @@ uptime-kuma:
         - hosts:
             - uptime.caas.i.kiessla.de
           secretName: uptime-kuma.tls
+
+  persistence:
+    data:
+      enabled: true
+      accessMode: ReadWriteOnce
+      size: 1Gi
+
+  common:
+    resources:
+      limits:
+        cpu: 50m
+        memory: 128Mi
+      requests:
+        cpu: 50m
+        memory: 128Mi

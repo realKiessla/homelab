@@ -1,4 +1,4 @@
-FROM jenkins4eval/jenkins:_version
+FROM jenkins/jenkins:_version
 RUN /usr/local/bin/install-plugins.sh \
     git \
     ldap \

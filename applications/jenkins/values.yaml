@@ -2,8 +2,8 @@ jenkins:
   controller:
 
     # Image.
-    image: "tenbriz/jenkins"
-    tag: "latest"
+    image: "jenkins/jenkins"
+    tag: "lts"
     imagePullPolicy: "IfNotPresent"
 
     # Admin user.
@@ -104,8 +104,8 @@ jenkins:
     testEnabled: false
 
   agent:
-    image: "tenbriz/jenkins-inbound-agent"
-    tag: "4.6-1-jdk11"
+    image: "jenkins/inbound-agent"
+    tag: "latest"
     podName: "jenkins-agent"
 
   additionalAgents:

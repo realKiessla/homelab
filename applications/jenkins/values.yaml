@@ -113,9 +113,7 @@ jenkins:
     testEnabled: false
 
   agent:
-    image: "jenkins/inbound-agent"
-    tag: "latest"
-    podName: "jenkins-agent"
+    enabled: true
 
   additionalAgents:
     docker-arm:

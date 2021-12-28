@@ -1,5 +1,9 @@
 jenkins:
   controller:
+    # Image.
+    image: tenbriz/jenkins
+    tag: latest
+
     # Admin user.
     adminSecret: false
 

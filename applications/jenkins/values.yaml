@@ -1,11 +1,5 @@
 jenkins:
   controller:
-
-    # Image.
-    image: "jenkins/jenkins"
-    tag: "lts"
-    imagePullPolicy: "IfNotPresent"
-
     # Admin user.
     adminSecret: false
 

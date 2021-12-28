@@ -110,26 +110,32 @@ jenkins:
     enabled: true
 
   additionalAgents:
-    docker-arm:
-      podName: docker-arm
-      nodeSelector:
-        tools/docker: "1"
-      volumes:
-        - type: HostPath
-          hostPath: /var/run/docker.sock
-          mountPath: /var/run/docker.sock
+    kaniko:
+      podName: kaniko
       yamlTemplate: |-
         apiVersion: v1
         kind: Pod
         spec:
           containers:
-            - name: docker
-              image: docker:20.10
-              command:
-              tty: true
-              volumeMounts:
-              - mountPath: /var/run/docker.sock
-                name: volume-0
+          - name: kaniko
+            image: gcr.io/kaniko-project/executor:v1.6.0-debug
+            imagePullPolicy: Always
+            command:
+            - sleep
+            args:
+            - 99d
+            volumeMounts:
+              - name: jenkins-docker-cfg
+                mountPath: /kaniko/.docker
+          volumes:
+          - name: jenkins-docker-cfg
+            projected:
+              sources:
+              - secret:
+                  name: regcred
+                  items:
+                    - key: .dockerconfigjson
+                      path: config.json
 
   persistence:
     volumes:

@@ -1,5 +1,5 @@
-FROM jenkins/jenkins:_version
-RUN /usr/local/bin/install-plugins.sh \
+FROM jenkins/jenkins:lts
+RUN jenkins-plugin-cli --plugins \
     git \
     ldap \
     job-dsl \

@@ -13,8 +13,17 @@ jenkins:
       - name: SECRETS
         value: /secrets/jenkins
 
-    # Disable auto-install of plugins since we're using a custom image.
-    installPlugins: false
+    installPlugins:
+      - git
+      - ldap
+      - job-dsl
+      - kubernetes
+      - role-strategy
+      - cloudbees-folder
+      - workflow-aggregator
+      - pipeline-stage-view
+      - github-branch-source
+      - configuration-as-code
 
     JCasC:
       defaultConfig: true

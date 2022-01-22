@@ -11,18 +11,6 @@ jenkins:
       - name: SECRETS
         value: /secrets/jenkins
 
-    installPlugins:
-      - git
-      - ldap
-      - job-dsl
-      - kubernetes
-      - role-strategy
-      - cloudbees-folder
-      - workflow-aggregator
-      - pipeline-stage-view
-      - github-branch-source
-      - configuration-as-code
-
     JCasC:
       defaultConfig: true
       configScripts:
@@ -86,6 +74,8 @@ jenkins:
           jobs:
             - script: >
                 folder('jenkins')
+                folder('postgresql')
+                folder('self-service-password')
 
     # Ingress.
     ingress:

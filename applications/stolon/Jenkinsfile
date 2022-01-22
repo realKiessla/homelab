@@ -1,0 +1,45 @@
+pipeline {
+    agent {
+        kubernetes {
+            inheritFrom 'kaniko'
+        }
+    }
+
+    options {
+        timeout(time: 1, unit: 'HOURS')
+        buildDiscarder(logRotator(numToKeepStr: '5'))
+    }
+
+    parameters {
+        string(name: 'TAG_NAME', defaultValue: 'v0.17.0', description: 'The release version number.')
+        string(name: 'PG_VERSION', defaultValue: '9.6', description: 'The PostgreSQL version number.')
+    }
+
+    stages {
+        stage('Prepare') {
+            steps {
+                script {
+                    currentBuild.displayName = "#${BUILD_NUMBER}:${params.TAG_NAME}-${params.PG_VERSION}"
+                }
+            }
+        }
+
+        stage('Checkout') {
+            steps {
+                checkout poll: false, scm: [
+                    $class: 'GitSCM',
+                    branches: [[name: "refs/tags/${params.TAG_NAME}"]],
+                    userRemoteConfigs: [[url: 'https://github.com/sorintlab/stolon.git']]
+                ]
+            }
+        }
+
+        stage("Build & Push") {
+            steps {
+                container('kaniko') {
+                    sh "/kaniko/executor --force --context=dir://./ -f ./examples/kubernetes/image/docker/Dockerfile --cache=true --build-arg PGVERSION=${params.PG_VERSION} --destination=tenbriz/stolon:${params.TAG_NAME}-pg${params.PG_VERSION}"
+                }
+            }
+        }
+    }
+}

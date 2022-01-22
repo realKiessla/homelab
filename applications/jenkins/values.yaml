@@ -121,6 +121,13 @@ jenkins:
             volumeMounts:
               - name: jenkins-docker-cfg
                 mountPath: /kaniko/.docker
+            resources:
+              requests:
+                memory: "1024Mi"
+                cpu: "1500m"
+              limits:
+                memory: "2048Mi"
+                cpu: "1500"
           volumes:
           - name: jenkins-docker-cfg
             projected:

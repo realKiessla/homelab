@@ -1,13 +1,13 @@
 ## Image / POD
 image:
   repository: vaultwarden/server
-  tag: 1.22.2
+  tag: 1.23.1
 
 ## Environment Variables
 env:
   ### General Settings
   - name: "DOMAIN"
-    value: "https://bitwarden.caas.i.kiessla.de"
+    value: "https://bitwarden.e.kiessla.de"
   - name: "SIGNUPS_ALLOWED"
     value: "false"
   - name: "INVITATIONS_ALLOWED"

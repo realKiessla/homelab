@@ -11,6 +11,7 @@ metadata:
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt
 spec:
+  ingressClassName: "nginx-public"
   rules:
     - http:
         paths:
@@ -21,8 +22,8 @@ spec:
                   name: http
             path: /
             pathType: ImplementationSpecific
-      host: "bitwarden.caas.i.kiessla.de"
+      host: "bitwarden.e.kiessla.de"
   tls:
-    - secretName: "bitwarden.acme-tls"
+    - secretName: "bitwarden-public.acme-tls"
       hosts:
-        - "bitwarden.caas.i.kiessla.de"
+        - "bitwarden.e.kiessla.de"

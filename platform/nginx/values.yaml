@@ -1,11 +1,23 @@
 internal:
   controller:
-    ingressClass: "nginx"
+    watchIngressWithoutClass: true
+    ingressClassResource:
+      name: "nginx"
+      enabled: true
+      default: true
+      controllerValue: "k8s.io/ingress-nginx"
+    replicaCount: 2
     service:
       loadBalancerIP: "10.0.50.5"
 
 public:
   controller:
-    ingressClass: "nginx-public"
+    watchIngressWithoutClass: false
+    ingressClassResource:
+      name: "nginx-public"
+      enabled: true
+      default: false
+      controllerValue: "k8s.io/ingress-nginx-public"
+    replicaCount: 2
     service:
       loadBalancerIP: "10.0.40.5"

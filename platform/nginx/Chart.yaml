@@ -2,14 +2,14 @@ apiVersion: v2
 name: nginx
 description: Helm chart to extend the default ingress-nginx with our own configurations.
 type: application
-version: 0.1.0
-appVersion: "v0.44.0"
+version: 0.2.0
+appVersion: "v1.1.1"
 dependencies:
   - name: ingress-nginx
-    version: 3.23.0
+    version: 4.0.16
     repository: https://kubernetes.github.io/ingress-nginx
     alias: internal
   - name: ingress-nginx
-    version: 3.23.0
+    version: 4.0.16
     repository: https://kubernetes.github.io/ingress-nginx
     alias: public

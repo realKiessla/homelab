@@ -3,6 +3,7 @@
 /applications/openldap/templates/secret.yaml
 /applications/jenkins/charts
 /applications/jenkins/templates/secret.yaml
+/platform/argocd/charts
 /platform/nginx/charts
 /platform/longhorn/charts
 /platform/cert-manager/digitalocean-dns-secret.yaml

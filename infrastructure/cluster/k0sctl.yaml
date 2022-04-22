@@ -1,0 +1,50 @@
+apiVersion: k0sctl.k0sproject.io/v1beta1
+kind: Cluster
+metadata:
+  name: k0s-cluster
+spec:
+  hosts:
+  # - role: controller
+  #   ssh:
+  #     address: 10.0.50.10
+  #     user: core
+  # - role: worker
+  #   ssh:
+  #     address: 10.0.50.20
+  #     user: core
+  # - role: worker
+  #   ssh:
+  #     address: 10.0.50.30
+  #     user: core
+  # - role: worker
+  #   ssh:
+  #     address: 10.0.50.40
+  #     user: core
+  - ssh:
+      address: 10.0.50.102
+      user: core
+    role: controller
+  - ssh:
+      address: 10.0.50.104
+      user: core
+    role: worker
+  k0s:
+    version: 1.23.5+k0s.0
+    config:
+      apiVersion: k0s.k0sproject.io/v1beta1
+      kind: Cluster
+      metadata:
+        name: k0s-homelab
+      spec:
+        telemetry:
+          enabled: false
+        extensions:
+         helm:
+           repositories:
+           - name: realkiessla
+             url: https://realkiessla.github.io/helm-charts
+           charts:
+           - name: default-networkpolicy
+             chartname: realkiessla/default-networkpolicy
+             version: "0.1.0"
+             namespace: default

@@ -1,0 +1,74 @@
+variant: fcos
+version: 1.4.0
+storage:
+  files:
+    - path: /etc/hostname
+      mode: 0644
+      contents:
+        inline: k0s-worker02
+    - path: /etc/zincati/config.d/51-rollout-wariness.toml
+      contents:
+        inline: |
+          [identity]
+          rollout_wariness = 0.5
+    - path: /etc/NetworkManager/system-connections/enp1s0.40.nmconnection
+      mode: 0600
+      contents:
+        inline: |
+          [connection]
+          id=enp1s0.40
+          type=vlan
+          interface-name=enp1s0.40
+          [vlan]
+          egress-priority-map=
+          flags=1
+          id=40
+          ingress-priority-map=
+          parent=enp1s0
+          [ipv4]
+          dns-search=
+          method=auto
+          route-metric=400
+
+# Allow SSH login to user 'core'.
+passwd:
+  users:
+    - name: core
+      ssh_authorized_keys:
+        - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHtvmASZz4g1Mp2pYKhNSBbF6jgrcLkBWNkUil0QYkin andreas@andreas-laptop
+
+# Remove CPU vulnerability mitigations, otherwise we can't use multithreading.
+kernel_arguments:
+  should_exist:
+    - mitigations=off
+  should_not_exist:
+    - mitigations=auto,nosmt
+
+# Install additional packages.
+systemd:
+  units:
+    # Installing htop as a layered package with rpm-ostree
+    - name: rpm-ostree-install-htop.service
+      enabled: true
+      contents: |
+        [Unit]
+        Description=Layer htop with rpm-ostree
+        Wants=network-online.target
+        After=network-online.target
+        # We run before `zincati.service` to avoid conflicting rpm-ostree
+        # transactions.
+        Before=zincati.service
+        ConditionPathExists=!/var/lib/%N.stamp
+
+        [Service]
+        Type=oneshot
+        RemainAfterExit=yes
+        # `--allow-inactive` ensures that rpm-ostree does not return an error
+        # if the package is already installed. This is useful if the package is
+        # added to the root image in a future Fedora CoreOS release as it will
+        # prevent the service from failing.
+        ExecStart=/usr/bin/rpm-ostree install --apply-live --allow-inactive htop
+        ExecStart=/bin/touch /var/lib/%N.stamp
+
+        [Install]
+        WantedBy=multi-user.target

@@ -23,4 +23,5 @@ jobs:
 
       # Runs a single command using the runners shell
       - name: Generate k0s-master ignition file
-        run: docker run --interactive --rm quay.io/coreos/butane:release --pretty --strict < /infrastructure/cluster/coreos/k0s-master.bu > /infrastructure/cluster/coreos/k0s-master.ign
+        working-directory: ./infrastructure/cluster/coreos
+        run: docker run --interactive --rm quay.io/coreos/butane:release --pretty --strict < k0s-master.bu > k0s-master.ign

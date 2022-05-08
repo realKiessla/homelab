@@ -4,30 +4,22 @@ metadata:
   name: k0s-cluster
 spec:
   hosts:
-  # - role: controller
-  #   ssh:
-  #     address: 10.0.50.10
-  #     user: core
-  # - role: worker
-  #   ssh:
-  #     address: 10.0.50.20
-  #     user: core
-  # - role: worker
-  #   ssh:
-  #     address: 10.0.50.30
-  #     user: core
-  # - role: worker
-  #   ssh:
-  #     address: 10.0.50.40
-  #     user: core
-  - ssh:
-      address: 10.0.50.102
+  - role: controller
+    ssh:
+     address: 10.0.50.10
+     user: core
+  - role: worker
+    ssh:
+      address: 10.0.50.20
       user: core
-    role: controller
-  - ssh:
-      address: 10.0.50.104
+  - role: worker
+    ssh:
+      address: 10.0.50.30
       user: core
-    role: worker
+  - role: worker
+    ssh:
+      address: 10.0.50.40
+      user: core
   k0s:
     version: 1.23.5+k0s.0
     config:

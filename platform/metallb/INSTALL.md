@@ -13,7 +13,7 @@ We needed to customize the `speaker` and `controller` of MetalLB.
 Therefore, we have to use our own `metallb.yaml` and cannot use the one provided on the website.
 
 - The namespace creation still can be done with:\
-`kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.9.5/manifests/namespace.yaml`
+`kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.10.2/manifests/namespace.yaml`
 
 - Then we have to apply our customized `metallb.yaml`:\
 `kubectl apply -f metallb.yaml`

@@ -2,14 +2,13 @@ apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
 metadata:
   name: letsencrypt
-  namespace: cert-manager
 spec:
   acme:
-    email: andreas.kiessling@posteo.de
+    email: {{ .Values.letsencrypt.account.email }}
     server: https://acme-v02.api.letsencrypt.org/directory
     preferredChain: "ISRG Root X1"
     privateKeySecretRef:
-      name: andreas-kiessling-account-key
+      name: letsencrypt-account-key
     solvers:
     - dns01:
         digitalocean:

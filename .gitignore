@@ -5,4 +5,4 @@
 /platform/argocd/charts
 /platform/nginx/charts
 /platform/longhorn/charts
-/platform/cert-manager/digitalocean-dns-secret.yaml
+/platform/cert-manager/charts

@@ -3,8 +3,8 @@ name: longhorn
 description: Extended / Customized version of Longhorn.
 type: application
 version: 0.1.0
-appVersion: 1.2.2
+appVersion: 1.2.4
 dependencies:
   - name: longhorn
-    version: 1.2.2
+    version: 1.2.4
     repository: https://charts.longhorn.io

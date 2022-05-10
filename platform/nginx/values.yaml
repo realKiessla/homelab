@@ -23,3 +23,6 @@ public:
     replicaCount: 2
     service:
       loadBalancerIP: "10.0.40.5"
+    config:
+      enable-modsecurity: true
+      enable-owasp-modsecurity-crs: true

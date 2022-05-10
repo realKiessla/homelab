@@ -6,6 +6,7 @@ internal:
       enabled: true
       default: true
       controllerValue: "k8s.io/ingress-nginx"
+    ingressClass: nginx
     replicaCount: 1
     service:
       loadBalancerIP: "10.0.50.5"
@@ -18,6 +19,7 @@ public:
       enabled: true
       default: false
       controllerValue: "k8s.io/ingress-nginx-public"
+    ingressClass: nginx-public
     replicaCount: 1
     service:
       loadBalancerIP: "10.0.40.5"

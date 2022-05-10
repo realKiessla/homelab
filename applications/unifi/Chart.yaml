@@ -1,0 +1,10 @@
+apiVersion: v2
+name: unifi
+description: Extended / Customized Helm Chart for unifi controller.
+type: application
+version: 4.9.2
+appVersion: v7.0.25
+dependencies:
+  - name: unifi
+    version: 4.9.2
+    repository: https://k8s-at-home.com/charts/

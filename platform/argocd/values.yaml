@@ -73,3 +73,6 @@ argo-cd:
         volumeMounts:
           - mountPath: /custom-tools
             name: custom-tools
+
+  applicationSet:
+    enabled: false

@@ -1,0 +1,10 @@
+---
+argocd:
+  namespace: argocd-system
+
+destination:
+  server: https://kubernetes.default.svc
+
+source:
+  repository: https://github.com/realkiessla/homelab
+  defaultBranch: master

@@ -1,0 +1,21 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: nginx
+  namespace: {{ .Values.argocd.namespace }}
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  destination:
+    namespace: nginx-system
+    server: {{ .Values.destination.server }}
+  source:
+    path: platform/nginx
+    repoURL: {{ .Values.source.repository }}
+    targetRevision: {{ .Values.source.defaultBranch }}
+  syncPolicy:
+    automated: {}
+    syncOptions:
+      - CreateNamespace=true

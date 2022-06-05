@@ -21,6 +21,7 @@ metallb:
       protocol: bgp
       addresses:
       - 10.0.40.8/32
+  #TODO: Change back before merge!
 
   controller:
     enabled: true

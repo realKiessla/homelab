@@ -2,17 +2,19 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: nginx
+  name: metallb
   namespace: {{ .Values.argocd.namespace }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "-2"
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
   project: default
   destination:
-    namespace: nginx-system
+    namespace: metallb-system
     server: {{ .Values.destination.server }}
   source:
-    path: platform/nginx
+    path: platform/metallb
     repoURL: {{ .Values.source.repository }}
     targetRevision: {{ .Values.source.defaultBranch }}
   syncPolicy:

@@ -2,17 +2,19 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: metallb
+  name: longhorn
   namespace: {{ .Values.argocd.namespace }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "-2"
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
   project: default
   destination:
-    namespace: metallb-system
+    namespace: longhorn-system
     server: {{ .Values.destination.server }}
   source:
-    path: platform/metallb
+    path: platform/longhorn
     repoURL: {{ .Values.source.repository }}
     targetRevision: {{ .Values.source.defaultBranch }}
   syncPolicy:

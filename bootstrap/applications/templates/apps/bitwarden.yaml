@@ -2,19 +2,24 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: longhorn
+  name: bitwarden
   namespace: {{ .Values.argocd.namespace }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "5"
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
   project: default
   destination:
-    namespace: longhorn-system
+    namespace: bitwarden
     server: {{ .Values.destination.server }}
   source:
-    path: platform/longhorn
+    path: applications/bitwarden
     repoURL: {{ .Values.source.repository }}
     targetRevision: {{ .Values.source.defaultBranch }}
+    helm:
+      valueFiles:
+        - secrets+age-import:///helm-secrets-private-keys/keys.txt?secret.enc.yaml
   syncPolicy:
     automated: {}
     syncOptions:

@@ -1,0 +1,23 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argocd
+  namespace: {{ .Values.argocd.namespace }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "-5"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  destination:
+    namespace: argocd-system
+    server: {{ .Values.destination.server }}
+  source:
+    path: bootstrap/argocd
+    repoURL: {{ .Values.source.repository }}
+    targetRevision: {{ .Values.source.defaultBranch }}
+  syncPolicy:
+    automated: {}
+    syncOptions:
+      - CreateNamespace=true

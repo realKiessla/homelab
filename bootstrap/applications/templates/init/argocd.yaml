@@ -17,6 +17,9 @@ spec:
     path: bootstrap/argocd
     repoURL: {{ .Values.source.repository }}
     targetRevision: {{ .Values.source.defaultBranch }}
+    helm:
+      valueFiles:
+        - secrets+age-import:///helm-secrets-private-keys/keys.txt?secret.enc.yaml
   syncPolicy:
     automated: {}
     syncOptions:

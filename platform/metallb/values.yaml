@@ -1,0 +1,45 @@
+metallb:
+
+  configInline:
+    peers:
+    - peer-address: 10.0.50.1
+      peer-asn: 64500
+      my-asn: 64550
+      address-pools:
+      - intranet
+    - peer-address: 10.0.40.1
+      peer-asn: 64500
+      my-asn: 64540
+      address-pools:
+      - internet
+    address-pools:
+    - name: intranet
+      protocol: bgp
+      addresses:
+      - 10.0.50.5/32
+    - name: internet
+      protocol: bgp
+      addresses:
+      - 10.0.40.5/32
+
+  controller:
+    enabled: true
+    image:
+      repository: tenbriz/metallb-controller
+      tag: 0.10.2-pr596
+      pullPolicy: IfNotPresent
+    resources:
+      limits:
+        cpu: 100m
+        memory: 100Mi
+
+  speaker:
+    enabled: true
+    image:
+      repository: tenbriz/metallb-speaker
+      tag: 0.10.2-pr596
+      pullPolicy: IfNotPresent
+    resources:
+      limits:
+        cpu: 100m
+        memory: 100Mi

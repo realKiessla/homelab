@@ -9,7 +9,7 @@ internal:
     ingressClass: nginx
     replicaCount: 2
     service:
-      loadBalancerIP: "10.0.50.8" #TODO: Change back before merge!
+      loadBalancerIP: "10.0.50.5"
 
 public:
   controller:
@@ -22,7 +22,7 @@ public:
     ingressClass: nginx-public
     replicaCount: 2
     service:
-      loadBalancerIP: "10.0.40.8" #TODO: Change back before merge!
+      loadBalancerIP: "10.0.40.5"
     config:
       enable-modsecurity: true
       enable-owasp-modsecurity-crs: true

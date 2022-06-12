@@ -6,8 +6,8 @@ spec:
   hosts:
   - role: controller
     ssh:
-     address: 10.0.50.10
-     user: core
+      address: 10.0.50.10
+      user: core
   - role: worker
     ssh:
       address: 10.0.50.20
@@ -21,7 +21,7 @@ spec:
       address: 10.0.50.40
       user: core
   k0s:
-    version: 1.23.5+k0s.0
+    version: 1.23.6+k0s.2
     config:
       apiVersion: k0s.k0sproject.io/v1beta1
       kind: Cluster

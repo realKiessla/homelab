@@ -16,12 +16,11 @@ metallb:
     - name: intranet
       protocol: bgp
       addresses:
-      - 10.0.50.8/32
+      - 10.0.50.5/32
     - name: internet
       protocol: bgp
       addresses:
-      - 10.0.40.8/32
-  #TODO: Change addresses back before merge!
+      - 10.0.40.5/32
 
   controller:
     enabled: true

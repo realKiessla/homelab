@@ -7,4 +7,4 @@ destination:
 
 source:
   repository: https://github.com/realkiessla/homelab
-  defaultBranch: feature/argocd
+  defaultBranch: master

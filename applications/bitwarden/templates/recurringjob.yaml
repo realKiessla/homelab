@@ -1,0 +1,30 @@
+---
+apiVersion: longhorn.io/v1beta1
+kind: RecurringJob
+metadata:
+  name: bitwarden-hourly
+  namespace: longhorn-system
+spec:
+  task: "snapshot"
+  cron: "10 * * * *"
+  retain: 24
+  concurrency: 1
+  groups:
+  - {{ .Chart.Name }}
+  labels:
+    app: {{ .Chart.Name }}
+---
+apiVersion: longhorn.io/v1beta1
+kind: RecurringJob
+metadata:
+  name: bitwarden-daily
+  namespace: longhorn-system
+spec:
+  task: "backup"
+  cron: "10 2 * * *"
+  retain: 7
+  concurrency: 1
+  groups:
+    - {{ .Chart.Name }}
+  labels:
+    app: {{ .Chart.Name }}

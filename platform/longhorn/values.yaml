@@ -1,4 +1,7 @@
 longhorn:
+  defaultSettings:
+    backupTarget: "nfs://freenas.i.kiessla.de:/mnt/main-storage/kubernetes"
+
   ingress:
     enabled: true
     ingressClassName: nginx

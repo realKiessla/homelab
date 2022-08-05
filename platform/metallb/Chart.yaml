@@ -3,8 +3,10 @@ name: metallb
 description: Extended / Customized Helm Chart of MetalLB.
 type: application
 version: 0.1.0
-appVersion: "0.10.2"
+appVersion: "0.13.4"
 dependencies:
+  # Dependency to metallb is only here for auto-completion.
   - name: metallb
-    version: 0.10.2
+    version: 0.13.4
     repository: https://metallb.github.io/metallb
+    condition: service.enabled

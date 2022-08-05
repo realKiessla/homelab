@@ -1,6 +1,12 @@
 # MetalLB
 MetalLB is used as a LoadBalancer for our bare metal Kubernetes cluster.
 
+## Installation
+Before the MetalLB templates (this Helm Chart) can be installed, the MetalLB components and CRDs have to be manually deployed before:
+```
+kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.13.4/config/manifests/metallb-native.yaml
+```
+
 ## Configuration
 MetalLB is configured to provide two LoadBalancers (IPs) for our two ingresses.
 
@@ -24,13 +30,3 @@ We currently have three Kubernetes nodes. Each node is in both VLANs.
 So each node has 2 IP addresses but only one can be reached from the respective LoadBalancer.
 
 With that we have a good separation between the internal, and the internet network while having the freedom of choice from where our service is reachable.
-
-### The problem with MetalLB
-MetalLB is currently (v0.10.2) not able to provide the functionality described above.
-Therefore, we use a customized version of MetalLB which is based on the v0.10.2 which has the still open pull request (PR) [#596](https://github.com/metallb/metallb/pull/596) already merged.
-
-That PR allows us to specify which address pools get announced to which peer.
-Before that, MetalLB gave every LoadBalancer all the IPs that she knew of.
-So our **internet** LoadBalancer also had the **internal** IP addresses that could not be reached from the internet.
-
-With this PR in place the two LoadBalancers have their respective IP addresses from the correct VLAN assigned.

@@ -1,0 +1,20 @@
+---
+apiVersion: metallb.io/v1beta2
+kind: BGPPeer
+metadata:
+  name: intranet
+  namespace: {{ .Release.Namespace }}
+spec:
+  myASN: 64550
+  peerASN: 64500
+  peerAddress: 10.0.50.1
+---
+apiVersion: metallb.io/v1beta2
+kind: BGPPeer
+metadata:
+  name: internet
+  namespace: {{ .Release.Namespace }}
+spec:
+  myASN: 64540
+  peerASN: 64500
+  peerAddress: 10.0.40.1

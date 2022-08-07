@@ -21,3 +21,9 @@ spec:
     automated: {}
     syncOptions:
       - CreateNamespace=true
+  ignoreDifferences:
+    - group: apiextensions
+      kind: CustomResourceDefinition
+      name: addresspools.metallb.io
+      jsonPointers:
+        - /spec/conversion/webhook/clientConfig/caBundle

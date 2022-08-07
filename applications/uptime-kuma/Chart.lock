@@ -1,6 +1,0 @@
-dependencies:
-- name: uptime-kuma
-  repository: https://k8s-at-home.com/charts/
-  version: 1.0.1
-digest: sha256:9c61b65abb1ac03f6958546e6c3babcf143c9eee122b6cf13e78a59aa119ee49
-generated: "2021-12-22T09:26:13.465614476+01:00"

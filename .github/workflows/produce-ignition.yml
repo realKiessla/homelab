@@ -38,7 +38,7 @@ jobs:
         run: docker run --interactive --rm quay.io/coreos/butane:release --pretty --strict < k0s-worker03.bu > k0s-worker03.ign
         
       - name: Upload a Build Artifact
-        uses: actions/upload-artifact@v3.0.0
+        uses: actions/upload-artifact@v3
         with:
           # Artifact name
           name: CoreOS - Ignition files

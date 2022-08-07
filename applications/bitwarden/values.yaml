@@ -23,10 +23,8 @@ env:
   ### SMTP Settings
   - name: "SMTP_HOST"
     value: "posteo.de"
-  - name: "SMTP_SSL"
-    value: "true"
-  - name: "SMTP_EXPLICIT_TLS"
-    value: "true"
+  - name: "SMTP_SECURITY"
+    value: "force_tls"
   - name: "SMTP_FROM"
     valueFrom:
       secretKeyRef:

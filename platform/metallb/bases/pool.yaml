@@ -3,7 +3,6 @@ apiVersion: metallb.io/v1beta1
 kind: IPAddressPool
 metadata:
   name: intranet
-  namespace: {{ .Release.Namespace }}
 spec:
   addresses:
     - 10.0.50.5/32
@@ -12,7 +11,6 @@ apiVersion: metallb.io/v1beta1
 kind: IPAddressPool
 metadata:
   name: internet
-  namespace: {{ .Release.Namespace }}
 spec:
   addresses:
     - 10.0.40.5/32

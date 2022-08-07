@@ -1,0 +1,26 @@
+postgres-operator:
+  enableJsonLogging: true
+
+  configKubernetes:
+    enable_pod_antiaffinity: true
+    watched_namespace: "*"
+
+postgres-operator-ui:
+  envs:
+    targetNamespace: "*"
+    teams:
+      - "acid"
+      - "kiessla"
+
+  ingress:
+    enabled: true
+    ingressClassName: "nginx"
+    annotations:
+      cert-manager.io/cluster-issuer: "letsencrypt"
+    hosts:
+      - host: "postgres.caas.i.kiessla.de"
+        paths: [""]
+    tls:
+      - secretName: "postgres.acme-tls"
+        hosts:
+          - "postgres.caas.i.kiessla.de"

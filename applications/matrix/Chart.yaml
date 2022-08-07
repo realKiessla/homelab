@@ -1,0 +1,13 @@
+apiVersion: v2
+name: matrix
+description: Customized / Extended version of a Matrix Helm Chart.
+type: application
+version: 0.1.0
+appVersion: "1.16.0"
+dependencies:
+  - name: default-networkpolicy
+    version: 0.1.0
+    repository: https://realkiessla.github.io/helm-charts
+  - name: matrix-synapse
+    version: 2.3.2
+    repository: https://ananace.gitlab.io/charts

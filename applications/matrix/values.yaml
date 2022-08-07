@@ -1,0 +1,33 @@
+matrix-synapse:
+  serverName: "kiessla.de"
+  publicServerName: "matrix.e.kiessla.de"
+
+  config:
+    logLevel: "INFO"
+    reportStats: true
+
+    enableRegistration: false
+
+  persistence:
+    enabled: true
+
+    size: 10Gi
+    storageClass: longhorn
+
+  ingress:
+    enabled: true
+    traefikPaths: false
+
+    className: "nginx-public"
+    includeServerName: false
+
+    annotations:
+      cert-manager.io/cluster-issuer: "letsencrypt"
+
+    csHosts:
+      - "matrix.e.kiessla.de"
+
+    tls:
+      - secretName: "matrix.acme-tls"
+        hosts:
+          - "matrix.e.kiessla.de"

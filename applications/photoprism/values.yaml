@@ -1,0 +1,35 @@
+photoprism:
+
+  # Container image
+  image:
+    repository: "photoprism/photoprism"
+    tag: "latest"
+    pullPolicy: "IfNotPresent"
+
+  # Persistence
+  persistence:
+    enabled: true
+    storagePath: "/photoprism/storage"
+    originalsPath: "/photoprism/originals"
+
+    volumes:
+      - name: "originals"
+        nfs:
+          server: "freenas.i.kiessla.de"
+          path: "/mnt/main-storage/photos"
+
+    volumeMounts:
+      - name: "photoprism-data"
+        mountPath: "/photoprism/storage"
+      - name: "originals"
+        mountPath: "/photoprism/originals"
+
+    volumeClaimTemplates:
+     - metadata:
+         name: "photoprism-data"
+       spec:
+         accessModes:
+           - ReadWriteOnce
+         resources:
+           requests:
+             storage: 10Gi

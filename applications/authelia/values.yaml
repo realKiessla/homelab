@@ -1,0 +1,133 @@
+authelia:
+
+  ## Image Parameters
+  ##
+  image:
+    registry: docker.io
+    repository: authelia/authelia
+    pullPolicy: IfNotPresent
+
+  ## RBAC
+  ##
+  rbac:
+    enabled: true
+    serviceAccountName: authelia
+
+  ## Authelia Domain
+  ##
+  domain: kiessla.de
+
+  ## Ingress
+  ##
+  ingress:
+    enabled: true
+
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt
+
+    certManager: true
+    className: nginx
+    subdomain: auth.caas.i
+
+    tls:
+      enabled: true
+      secret: authelia.acme-tls
+
+  ## POD
+  ##
+  pod:
+    kind: Deployment
+
+    replicas: 1
+    revisionHistoryLimit: 5
+
+    resources:
+      limits:
+        cpu: 2000m
+        memory: 1.5G
+      requests:
+        cpu: 250m
+        memory: 1.0G
+
+    ## Provide our own user database (file)
+    extraVolumes:
+      - name: authelia-users-volume
+        configMap:
+          name: authelia-users
+
+    extraVolumeMounts:
+      - name: authelia-users-volume
+        subPath: users_database.yaml
+        mountPath: /config/users_database.yml
+
+  ## Authelia Configuration
+  configMap:
+    enabled: true
+
+    default_redirection_url: https://auth.caas.i.kiessla.de
+    default_2fa_method: totp
+
+    theme: dark
+
+    totp:
+      disable: false
+      issuer: Kiessla HomeLab
+
+    webauthn:
+      disable: true
+
+    authentication_backend:
+      password_reset:
+        disable: true
+
+      ldap:
+        enabled: false
+
+      file:
+        enabled: true
+
+    session:
+      redis:
+        enabled: false
+
+    storage:
+      local:
+        enabled: true
+        path: /config/db.sqlite3
+
+      mysql:
+        enabled: false
+
+      postgres:
+        enabled: false
+
+    notifier:
+      filesystem:
+        enabled: false
+
+      smtp:
+        enabled: true
+        enabledSecret: true
+
+        host: posteo.de
+        port: 465
+
+        username: andreas.kiessling@posteo.de
+        sender: andreas.kiessling@posteo.de
+
+        startup_check_address: andreas.kiessling@posteo.de
+
+  ## Authelia Secrets
+  ##
+  secret:
+    jwt:
+      value: ""
+
+    smtp:
+      value: "##"
+
+  ## Persistence
+  ##
+  persistence:
+    enabled: true
+    size: 100Mi

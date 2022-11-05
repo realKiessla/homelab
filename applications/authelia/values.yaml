@@ -36,18 +36,32 @@ authelia:
   ## POD
   ##
   pod:
-    kind: Deployment
+    kind: StatefulSet
 
-    replicas: 1
+    replicas: 3
     revisionHistoryLimit: 5
 
+    selectors:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: app.kubernetes.io/name
+                      operator: In
+                      values:
+                        - authelia
+                topologyKey: "kubernetes.io/hostname"
+
     resources:
-      limits:
-        cpu: 2000m
-        memory: 1.5G
       requests:
         cpu: 250m
         memory: 1.0G
+      limits:
+        cpu: 2000m
+        memory: 1.5G
 
     ## Provide our own user database (file)
     extraVolumes:
@@ -55,23 +69,31 @@ authelia:
         configMap:
           name: authelia-users
 
+      - name: database-secrets-volume
+        secret:
+          secretName: authelia-owner-user.acid-authelia.credentials.postgresql.acid.zalan.do
+          optional: false
+
     extraVolumeMounts:
       - name: authelia-users-volume
         subPath: users_database.yaml
         mountPath: /config/users_database.yml
 
+      - name: database-secrets-volume
+        mountPath: /database_secrets
+
   ## Authelia Configuration
   configMap:
     enabled: true
 
-    default_redirection_url: https://auth.caas.i.kiessla.de
-    default_2fa_method: totp
+    default_redirection_url: "https://auth.caas.i.kiessla.de"
+    default_2fa_method: "totp"
 
     theme: dark
 
     totp:
       disable: false
-      issuer: Kiessla HomeLab
+      issuer: "Kiessla HomeLab"
 
     webauthn:
       disable: true
@@ -92,14 +114,23 @@ authelia:
 
     storage:
       local:
+        #TODO: Disable when Helm chart is able to use different secret for postgres.
         enabled: true
-        path: /config/db.sqlite3
 
       mysql:
         enabled: false
 
       postgres:
+        #TODO: Enable when Helm chart is able to use different secret for postgres.
         enabled: false
+        host: acid-authelia.authelia.svc.cluster.local
+        port: 5432
+        database: authelia
+        schema: data
+        username: authelia_owner_user
+        tls:
+          enabled: true
+          skip_verify: true
 
     notifier:
       filesystem:
@@ -111,20 +142,6 @@ authelia:
 
         host: posteo.de
         port: 465
-
-        username: andreas.kiessling@posteo.de
-        sender: andreas.kiessling@posteo.de
-
-        startup_check_address: andreas.kiessling@posteo.de
-
-  ## Authelia Secrets
-  ##
-  secret:
-    jwt:
-      value: ""
-
-    smtp:
-      value: "##"
 
   ## Persistence
   ##

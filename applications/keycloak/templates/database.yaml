@@ -1,0 +1,23 @@
+---
+apiVersion: acid.zalan.do/v1
+kind: postgresql
+metadata:
+  name: acid-{{ .Chart.Name }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  numberOfInstances: 3
+  postgresql:
+    version: "10"
+  teamId: "acid"
+  volume:
+    size: 1Gi
+  preparedDatabases:
+    keycloak:
+      defaultUsers: true
+  resources:
+    requests:
+      cpu: 10m
+      memory: 100Mi
+    limits:
+      cpu: 500m
+      memory: 500Mi

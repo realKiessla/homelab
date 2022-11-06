@@ -1,0 +1,33 @@
+apiVersion: k8s.keycloak.org/v2alpha1
+kind: Keycloak
+metadata:
+  name: {{ .Chart.Name }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    app.kubernetes.io/name: {{ .Chart.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  instances: 2
+  db:
+    vendor: postgres
+    host: acid-keycloak
+    port: 5432
+    database: keycloak
+    schema: data
+    usernameSecret:
+      name: keycloak-owner-user.acid-keycloak.credentials.postgresql.acid.zalan.do
+      key: username
+      optional: false
+    passwordSecret:
+      name: keycloak-owner-user.acid-keycloak.credentials.postgresql.acid.zalan.do
+      key: password
+      optional: false
+  ingress:
+    enabled: false
+  http:
+    tlsSecret: {{ .Values.http.tlsSecretName }}
+  hostname:
+    hostname: {{ .Values.http.hostname.public }}
+    admin: {{ .Values.http.hostname.admin }}

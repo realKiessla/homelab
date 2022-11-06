@@ -11,7 +11,7 @@ metadata:
 spec:
   project: default
   destination:
-    namespace: keycloak
+    namespace: keycloak-operator-system
     server: {{ .Values.destination.server }}
   source:
     path: applications/keycloak

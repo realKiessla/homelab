@@ -1,0 +1,14 @@
+http:
+  hostname:
+    public: auth.e.kiessla.de
+    admin: keycloak.caas.i.kiessla.de
+  tlsSecretName: keycloak-public.acme-tls
+  publicPaths:
+    - path: /js/
+      pathType: Prefix
+    - path: /realms/
+      pathType: Prefix
+    - path: /resources/
+      pathType: Prefix
+    - path: /robots.txt
+      pathType: Exact

@@ -1,0 +1,166 @@
+authelia:
+
+  ## Image Parameters
+  ##
+  image:
+    registry: docker.io
+    repository: authelia/authelia
+    pullPolicy: IfNotPresent
+
+  ## RBAC
+  ##
+  rbac:
+    enabled: true
+    serviceAccountName: authelia
+
+  ## Authelia Domain
+  ##
+  domain: kiessla.de
+
+  ## Ingress
+  ##
+  ingress:
+    enabled: true
+
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt
+
+    certManager: true
+    className: nginx
+    subdomain: auth.caas.i
+
+    tls:
+      enabled: true
+      secret: authelia.acme-tls
+
+  ## POD
+  ##
+  pod:
+    kind: StatefulSet
+
+    replicas: 3
+    revisionHistoryLimit: 5
+
+    selectors:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: app.kubernetes.io/name
+                      operator: In
+                      values:
+                        - authelia
+                topologyKey: "kubernetes.io/hostname"
+
+    resources:
+      requests:
+        cpu: 250m
+        memory: 1.0G
+      limits:
+        cpu: 2000m
+        memory: 1.5G
+
+    ## Provide our own user database (file)
+    extraVolumes:
+      - name: authelia-users-volume
+        configMap:
+          name: authelia-users
+
+      - name: database-secrets-volume
+        secret:
+          secretName: authelia-owner-user.acid-authelia.credentials.postgresql.acid.zalan.do
+          optional: false
+
+    extraVolumeMounts:
+      - name: authelia-users-volume
+        subPath: users_database.yaml
+        mountPath: /config/users_database.yml
+
+      - name: database-secrets-volume
+        mountPath: /database_secrets
+
+  ## Authelia Configuration
+  configMap:
+    enabled: true
+
+    default_redirection_url: "https://auth.caas.i.kiessla.de"
+    default_2fa_method: "totp"
+
+    theme: dark
+
+    totp:
+      disable: false
+      issuer: "Kiessla HomeLab"
+
+    webauthn:
+      disable: true
+
+    authentication_backend:
+      password_reset:
+        disable: true
+
+      ldap:
+        enabled: false
+
+      file:
+        enabled: true
+
+    access_control:
+      default_policy: deny
+
+      networks:
+        - name: internal
+          networks:
+            - 10.0.0.0/16
+
+      rules:
+        - domain: longhorn.caas.i.kiessla.de
+          policy: one_factor
+          networks:
+            - internal
+          subject:
+            - "group:admins"
+
+    session:
+      redis:
+        enabled: false
+
+    storage:
+      local:
+        #TODO: Disable when Helm chart is able to use different secret for postgres.
+        enabled: true
+
+      mysql:
+        enabled: false
+
+      postgres:
+        #TODO: Enable when Helm chart is able to use different secret for postgres.
+        enabled: false
+        host: acid-authelia.authelia.svc.cluster.local
+        port: 5432
+        database: authelia
+        schema: data
+        username: authelia_owner_user
+        tls:
+          enabled: true
+          skip_verify: true
+
+    notifier:
+      filesystem:
+        enabled: false
+
+      smtp:
+        enabled: true
+        enabledSecret: true
+
+        host: posteo.de
+        port: 465
+
+  ## Persistence
+  ##
+  persistence:
+    enabled: true
+    size: 100Mi

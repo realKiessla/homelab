@@ -1,0 +1,26 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: authelia
+  namespace: {{ .Values.argocd.namespace }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "5"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  destination:
+    namespace: authelia
+    server: {{ .Values.destination.server }}
+  source:
+    path: applications/authelia
+    repoURL: {{ .Values.source.repository }}
+    targetRevision: {{ .Values.source.defaultBranch }}
+    helm:
+      valueFiles:
+        - secrets+age-import:///helm-secrets-private-keys/keys.txt?secret.enc.yaml
+  syncPolicy:
+    automated: {}
+    syncOptions:
+      - CreateNamespace=true

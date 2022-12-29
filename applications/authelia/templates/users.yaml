@@ -1,0 +1,16 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "authelia-users"
+data:
+  users_database.yaml: |-
+    users:
+    {{- range $.Values.users }}
+      {{ .name }}:
+        disabled: {{ .disabled }}
+        displayname: {{ .displayname }}
+        password: {{ .password }}
+        email: {{ .email }}
+        groups: {{ .groups }}
+    {{- end }}

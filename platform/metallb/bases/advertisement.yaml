@@ -18,3 +18,20 @@ spec:
     - internet
   peers:
     - internet
+---
+apiVersion: metallb.io/v1beta1
+kind: BGPAdvertisement
+metadata:
+  name: app
+spec:
+  ipAddressPools:
+    - app
+  peers:
+    - app
+  nodeSelectors:
+    - matchLabels:
+        kubernetes.io/hostname: k0s-worker01
+    - matchLabels:
+        kubernetes.io/hostname: k0s-worker02
+    - matchLabels:
+        kubernetes.io/hostname: k0s-worker03

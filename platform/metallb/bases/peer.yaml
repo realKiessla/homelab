@@ -16,3 +16,12 @@ spec:
   myASN: 64540
   peerASN: 64500
   peerAddress: 10.0.40.1
+---
+apiVersion: metallb.io/v1beta2
+kind: BGPPeer
+metadata:
+  name: app
+spec:
+  myASN: 64590
+  peerASN: 64500
+  peerAddress: 10.0.90.1

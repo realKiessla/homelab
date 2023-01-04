@@ -123,6 +123,12 @@ authelia:
             - internal
           subject:
             - "group:admins"
+        - domain: postgres.caas.i.kiessla.de
+          policy: one_factor
+          networks:
+            - internal
+          subject:
+            - "group:admins"
 
     session:
       redis:

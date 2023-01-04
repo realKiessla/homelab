@@ -26,3 +26,16 @@ public:
     config:
       enable-modsecurity: true
       enable-owasp-modsecurity-crs: true
+
+app:
+  controller:
+    watchIngressWithoutClass: false
+    ingressClassResource:
+      name: "nginx-app"
+      enabled: true
+      default: false
+      controllerValue: "k8s.io/ingress-nginx-app"
+    ingressClass: nginx-app
+    replicaCount: 2
+    service:
+      loadBalancerIP: "10.0.90.5"

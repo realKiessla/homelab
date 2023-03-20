@@ -6,5 +6,5 @@ version: 0.8.51
 appVersion: 4.37.5
 dependencies:
   - name: authelia
-    version: 0.8.51
+    version: 0.8.57
     repository: https://charts.authelia.com

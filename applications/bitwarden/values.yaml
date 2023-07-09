@@ -1,7 +1,7 @@
 ## Image / POD
 image:
   repository: vaultwarden/server
-  tag: 1.26.0
+  tag: 1.29.0
 
 ## Environment Variables
 env:
